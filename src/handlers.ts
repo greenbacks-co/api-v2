@@ -8,5 +8,5 @@ import { buildServer } from './server.js';
 export const handler = startServerAndCreateLambdaHandler(
   // @ts-expect-error: seems to be some mismatch inside apollo :(
   buildServer(),
-  handlers.createAPIGatewayProxyEventV2RequestHandler()
+  handlers.createAPIGatewayProxyEventV2RequestHandler(),
 );

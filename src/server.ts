@@ -1,8 +1,4 @@
 import { ApolloServer } from '@apollo/server';
-import {
-  startServerAndCreateLambdaHandler,
-  handlers,
-} from '@as-integrations/aws-lambda';
 
 export function buildServer() {
   return new ApolloServer({
