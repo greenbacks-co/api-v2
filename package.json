@@ -13,6 +13,7 @@
     "@eslint/js": "^9.21.0",
     "eslint": "^9.21.0",
     "globals": "^16.0.0",
+    "nodemon": "^3.1.9",
     "prettier": "3.5.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.0"
@@ -30,7 +31,7 @@
     "format": "prettier -w .",
     "format:check": "prettier -c .",
     "lint": "eslint src",
-    "start": "npm run compile && node ./dist/local.js",
+    "start": "nodemon --exec \"npm run compile && node dist/src/local.js\" -e ts --ignore dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
