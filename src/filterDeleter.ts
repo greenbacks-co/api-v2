@@ -1,6 +1,5 @@
 import { DeleteCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-import { Category } from './filterType.js';
 import type { Filter } from './filterType.js';
 
 export interface FilterDeleter {
@@ -29,11 +28,44 @@ export class DynamoFilterDeleter implements FilterDeleter {
       TableName: 'filters',
     });
     const result = await this.dynamoClient.send(command);
-    if (result?.Attributes === undefined) throw new NoItemError();
+    if (result?.Attributes === undefined) throw new NoItemError({ id, userId });
     return result.Attributes as Filter;
   }
 }
 
-export class FilterDeleterError extends Error {}
+export class TestFilterDeleter implements FilterDeleter {
+  readonly calls: string[];
+  private readonly responses: Record<string, Filter>;
 
-export class NoItemError extends FilterDeleterError {}
+  constructor({ responses = {} }: { responses?: Record<string, Filter> } = {}) {
+    this.calls = [];
+    this.responses = responses;
+  }
+
+  async delete({
+    id,
+    userId,
+  }: {
+    id: string;
+    userId: string;
+  }): Promise<Filter> {
+    const serializedInput = `${userId}|${id}`;
+    this.calls.push(serializedInput);
+    const response = this.responses[serializedInput];
+    if (response === undefined) throw new NoItemError({ id, userId });
+    return response;
+  }
+}
+
+export class FilterDeleterError extends Error {
+  constructor(message?: string) {
+    if (message !== undefined) super(message);
+    else super('Filter Deleter Error');
+  }
+}
+
+export class NoItemError extends FilterDeleterError {
+  constructor({ id, userId }: { id: string; userId: string }) {
+    super(`No filter exists with id '${id}' for user '${userId}'`);
+  }
+}
