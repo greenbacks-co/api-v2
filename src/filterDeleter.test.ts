@@ -5,6 +5,7 @@ import { describe, expect, test } from '@jest/globals';
 
 import { DynamoFilterDeleter, NoItemError } from './filterDeleter.js';
 import { Category, Comparator } from './filterType.js';
+import { SilentLogger } from './logger.js';
 
 describe('dynamo filter deleter', () => {
   test('deletes item with sdk and returns result ', async () => {
@@ -33,6 +34,7 @@ describe('dynamo filter deleter', () => {
     const client = DynamoDBDocumentClient.from(ddb);
     const deleter = new DynamoFilterDeleter({
       dynamoClient: client,
+      logger: new SilentLogger(),
     });
     const result = await deleter.delete({
       id: 'test-id',
@@ -63,6 +65,7 @@ describe('dynamo filter deleter', () => {
     const client = DynamoDBDocumentClient.from(ddb);
     const deleter = new DynamoFilterDeleter({
       dynamoClient: client,
+      logger: new SilentLogger(),
     });
     expect(() =>
       deleter.delete({
